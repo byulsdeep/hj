@@ -46,12 +46,14 @@ public class HomeController {
 	
 /* Auth */ 
 	
+	//이경준
 	@RequestMapping(value = "/First", method = RequestMethod.GET)
 	public ModelAndView first(ModelAndView mav, @ModelAttribute AuthB ab) {
 		mav.addObject(ab);
 		auth.backController("First", mav);
 		return mav;
 	}
+	//이경준
 	@RequestMapping(value = "/LogIn", method = RequestMethod.POST)
 	public ModelAndView logIn(HttpServletRequest req,ModelAndView mav, @ModelAttribute AuthB ab) {
 		mav.addObject(ab);
@@ -59,6 +61,7 @@ public class HomeController {
 		auth.backController("LogIn", mav);
 		return mav;
 	}	
+	//강한별
 	@RequestMapping(value = "/LogOut", method = RequestMethod.POST)
 	public ModelAndView logOut(ModelAndView mav, @ModelAttribute AuthB ab) {
 		System.out.println("HomeController/LogOut");
@@ -66,6 +69,7 @@ public class HomeController {
 		auth.backController("LogOut", mav);
 		return mav;
 	}
+	//이경준
 	@RequestMapping(value = "/Join", method = RequestMethod.POST)
 	public ModelAndView join(ModelAndView mav, @ModelAttribute AuthB ab) {
 		mav.addObject(ab);
@@ -75,11 +79,13 @@ public class HomeController {
 
 /* MovePage */
 	
+	//이경준
 	@RequestMapping(value = "/SignUp", method = RequestMethod.GET)
 	public ModelAndView signUp(ModelAndView mav) {
 		auth.backController("SignUp", mav);
 		return mav;
 	}
+	//강한별
 	@RequestMapping(value = "/MoveMain", method = RequestMethod.POST)
 	public ModelAndView moveMain(HttpServletRequest req, ModelAndView mav, @ModelAttribute AuthB ab) {
 		System.out.println("MoveMain");
@@ -88,6 +94,7 @@ public class HomeController {
 		this.main.backController("MoveMain", mav);
 		return mav;
 	}
+	//강한별
 	@RequestMapping(value = "/MoveProject", method = RequestMethod.POST)
 	public ModelAndView moveNewProject(HttpServletRequest req, ModelAndView mav, @ModelAttribute AuthB ab) {
 		System.out.println("MoveProject");
@@ -96,6 +103,7 @@ public class HomeController {
 		this.pro.backController("MoveProject", mav);
 		return mav;
 	}
+	//강한별
 	@RequestMapping(value = "/MoveAlert", method = RequestMethod.POST)
 	public ModelAndView moveAlert(HttpServletRequest req, ModelAndView mav, @ModelAttribute AuthB ab) {
 		System.out.println("MoveAlert");
@@ -104,6 +112,7 @@ public class HomeController {
 		this.alert.backController("MoveAlert", mav);
 		return mav;
 	}
+	//강한별
 	@RequestMapping(value = "/MoveMgr", method = RequestMethod.POST)
 	public ModelAndView moveMgr(HttpServletRequest req, ModelAndView mav, @ModelAttribute AuthB ab) {
 		System.out.println("MoveMgr");
@@ -112,6 +121,7 @@ public class HomeController {
 		this.mgr.backController("MoveMgr", mav);
 		return mav;
 	}
+	//강한별
 	@RequestMapping(value = "/MoveMyPage", method = RequestMethod.POST)
 	public ModelAndView moveMyPage(HttpServletRequest req, ModelAndView mav, @ModelAttribute AuthB ab) {
 		System.out.println("MoveMyPage");
@@ -122,6 +132,8 @@ public class HomeController {
 	}
 	
 /* Main */ 
+	
+	//강한별
 	@PostMapping("/EmailAuth")
 	public ModelAndView emailAuth(ModelAndView mav, @ModelAttribute AuthB ab) {
 		System.out.println("EmailAuth");	
@@ -129,6 +141,7 @@ public class HomeController {
 		main.backController("EmailAuth",  mav);
 		return mav;
 	}
+	//강한별
 	@PostMapping("/Refusal")
 	public ModelAndView refusal(ModelAndView mav, @ModelAttribute AuthB ab) {
 		System.out.println("Refusal");	
@@ -139,6 +152,7 @@ public class HomeController {
 	
 /* Project */	
 	
+	//강한별
 	@PostMapping("/InviteMembers")
 	public ProjectB inviteMember(ModelAndView mav, @ModelAttribute ProjectB pb) {
 		System.out.println("HomeController/InviteMembers");	
@@ -146,5 +160,4 @@ public class HomeController {
 		pro.backController("InviteMembers",  mav);
 		return (ProjectB) mav.getModel().get(pb);
 	}	
-
 }

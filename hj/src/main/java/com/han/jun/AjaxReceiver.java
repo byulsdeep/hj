@@ -26,6 +26,7 @@ public class AjaxReceiver {
 	
 /* Main */ 
 	
+	//강한별
 	@RequestMapping(value = "/IsInvited", method = RequestMethod.POST)
 	public List<AulB> isInvited(Model model, @ModelAttribute AuthB ab) {
 		System.out.println("IsInvited");
@@ -33,6 +34,7 @@ public class AjaxReceiver {
 		this.main.backController("IsInvited", model);
 		return (List<AulB>)model.getAttribute("InviteList");
 	}
+	//강한별
 	@RequestMapping(value = "/IsInvited2", method = RequestMethod.POST)
 	public List<AulB> isInvited2(Model model, @ModelAttribute AuthB ab) {
 		System.out.println("IsInvited2");
@@ -40,6 +42,7 @@ public class AjaxReceiver {
 		this.main.backController("IsInvited2", model);
 		return (List<AulB>)model.getAttribute("SentList");
 	}
+	//강한별
 	@RequestMapping(value = "/GetProjectList", method = RequestMethod.POST)
 	public List<ProListB> getProjectList(Model model, @ModelAttribute AuthB ab) {
 		System.out.println("GetProjectList");
@@ -47,6 +50,7 @@ public class AjaxReceiver {
 		this.main.backController("GetProjectList", model);
 		return (List<ProListB>)model.getAttribute("ProjectList");
 	}
+	//강한별
 	@RequestMapping(value = "/GetProjectMembers", method = RequestMethod.POST)
 	public String getProjectMembers(Model model, @ModelAttribute ProjectB pb) {
 		System.out.println("GetProjectMembers");
@@ -57,6 +61,7 @@ public class AjaxReceiver {
 	
 /* Project */ 
 	
+	//강한별
 	@PostMapping("/InsProject")
 	public List<AuthB> insProject(Model model, @ModelAttribute ProjectB pb) {
 		System.out.println("InsProject");	
