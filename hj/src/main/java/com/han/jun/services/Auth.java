@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -43,7 +44,7 @@ public class Auth implements ServicesRule {
 			case "First" : // session 확인 후 home or main 이동 결정
 				first(mav);
 				break;
-			case "Refresh" :
+			case "LogIn" :
 				refresh(mav);
 				break;	
 			case "LogOut" :
@@ -57,12 +58,9 @@ public class Auth implements ServicesRule {
 			case "First" : // session 확인 후 home or main 이동 결정
 				first(mav);
 				break;
-			case "Refresh" :
+			case "LogIn" :
 				refresh(mav);
 				break;	
-			case "LogIn" :
-				logIn(mav);
-				break;
 			case "SignUp" :
 				signUp(mav);
 				break;	
@@ -72,7 +70,6 @@ public class Auth implements ServicesRule {
 			}
 		}
 	}
-	
 	public void backController(String serviceCode, Model model) {}
 	
 	private void first(ModelAndView mav) {
@@ -124,12 +121,23 @@ public class Auth implements ServicesRule {
 	}
 	@Transactional(readOnly = true)
 	private void signUp(ModelAndView mav) {
-		
-	
 		mav.addObject("pmbCode", this.session.selectOne("getNewPmbCode"));
-		
+		mav.addObject("level", this.makeSelectHtml(this.session.selectList("getLevelList"), true, "Role"));
+		mav.addObject("classs", this.makeSelectHtml(this.session.selectList("getClassList"), false, "Class"));
+
 		mav.setViewName("join");
-		
+	}
+	
+	private String makeSelectHtml(List<AuthB> list, boolean type, String title) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("<select name='" + (type? "pmbLevel":"pmbClass")+ "'>");	
+		for(AuthB ab: list) {
+			sb.append("<option value='" + (type?ab.getPmbLevel():ab.getPmbClass()) 
+					+ "'>" + (type?ab.getPmbLevelName():ab.getPmbClassName()) + "</option>");
+		}
+		sb.append("</select>");
+
+		return sb.toString();
 	}
 	private void join(ModelAndView mav) {
 		String page = "join";
@@ -160,7 +168,7 @@ public class Auth implements ServicesRule {
 		mav.setViewName("home");
 	}
 
-	boolean convert(int result) {
+	private boolean convert(int result) {
 		return result >= 1 ? true : false;
 	}
 	

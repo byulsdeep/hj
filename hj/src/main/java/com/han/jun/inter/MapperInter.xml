@@ -3,15 +3,9 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.han.jun.inter.MapperInter">
-	<!-- Query 또는 DML -->
-	<select id="getNewPmbCode" resultType="string">
-		SELECT NVL(TO_CHAR(TO_NUMBER(MAX(PMB_CODE)) +1), TO_CHAR(SYSDATE, 'YYYYMM') || '01') AS PMBCODE 
-		FROM PMB WHERE SUBSTR(PMB_CODE, 1,6) = TO_CHAR(SYSDATE, 'YYYYMM')
-	</select>
-	<insert id="insPmb" parameterType="com.han.jun.beans.AuthB">
-		INSERT INTO PMB(PMB_CODE, PMB_PASSWORD, PMB_NAME, PMB_MLVCODE, PMB_CLACODE, PMB_EMAIL)
-		VALUES (#{pmbCode}, #{pmbPassword}, #{pmbName}, #{pmbLevel}, #{pmbClass}, #{pmbEmail})
-	</insert>
+
+<!-- auth -->
+
 	<select id="getPassword" parameterType="com.han.jun.beans.AuthB" resultType="string">
 		SELECT PMB_PASSWORD AS PMBPASSWORD FROM PMB WHERE PMB_CODE = #{pmbCode}
 	</select>
@@ -24,5 +18,97 @@
 	</insert>
 	<select id="getAccessInfo" parameterType="com.han.jun.beans.AuthB" resultType="com.han.jun.beans.AuthB">
 		SELECT * FROM ACCESSINFO WHERE PMBCODE = #{pmbCode} AND ASLPUBLICIP = #{aslPublicIp} AND ASLPRIVATEIP = #{aslPrivateIp} 
+	</select>
+	
+<!-- signup -->	
+
+	<select id="getNewPmbCode" resultType="string">
+		SELECT NVL(TO_CHAR(TO_NUMBER(MAX(PMB_CODE)) +1), TO_CHAR(SYSDATE, 'YYYYMM') || '01') AS PMBCODE 
+		FROM PMB WHERE SUBSTR(PMB_CODE, 1,6) = TO_CHAR(SYSDATE, 'YYYYMM')
+	</select>
+	<select id="getLevelList" resultType="com.han.jun.beans.AuthB">
+		SELECT MLV_CODE AS PMBLEVEL, MLV_NAME AS PMBLEVELNAME FROM MLV
+	</select>
+	<select id="getClassList" resultType="com.han.jun.beans.AuthB">
+		<![CDATA[
+		SELECT CLA_CODE AS PMBCLASS, CLA_NAME || '[' || CLA_NUM || ']' AS PMBCLASSNAME FROM CLA
+		]]>
+	</select>	
+	<insert id="insPmb" parameterType="com.han.jun.beans.AuthB">
+		INSERT INTO PMB(PMB_CODE, PMB_PASSWORD, PMB_NAME, PMB_MLVCODE, PMB_CLACODE, PMB_EMAIL)
+		VALUES (#{pmbCode}, #{pmbPassword}, #{pmbName}, #{pmbLevel}, #{pmbClass}, #{pmbEmail})
+	</insert>	
+	
+<!-- project -->
+
+	<insert id="insProject" parameterType="com.han.jun.beans.ProjectB">
+		INSERT INTO PRO(PRO_CODE, PRO_NAME, PRO_COMMENTS, PRO_START, PRO_END, PRO_VISIBLE) 
+		VALUES(#{projectCode}, #{projectName}, #{projectComment}, TO_DATE(#{startDate}, 'YYYY-MM-DD'), TO_DATE(#{endDate}, 'YYYY-MM-DD'), #{isVisible})
+	</insert>	
+	<select id="getMemberList" parameterType="com.han.jun.beans.AuthB" resultType="com.han.jun.beans.AuthB">
+		SELECT * FROM MEMBERLIST
+	</select>	
+	<update id="insProjectMembers" parameterType="com.han.jun.beans.ProjectB">
+		<foreach item="pm" collection="projectMembers" separator=" " open="INSERT ALL" close="SELECT * FROM DUAL">
+		INTO PRM(PRM_PROCODE, PRM_PMBCODE, PRM_POSITION, PRM_ACCEPT)
+		VALUES(#{projectCode}, #{pm.pmbCode}, 'MB', default)
+		</foreach>
+	</update>
+	<insert id="insSelf" parameterType="com.han.jun.beans.ProMemB">
+		INSERT INTO PRM(PRM_PROCODE, PRM_PMBCODE, PRM_POSITION, PRM_ACCEPT)
+		VALUES(#{projectCode}, #{pmbCode}, 'MG', 'AC')
+	</insert>
+	
+<!-- email auth -->
+	
+	<insert id="insAul" parameterType="com.han.jun.beans.AulB">
+		INSERT INTO AUL(AUL_SPMBCODE, AUL_RPMBCODE, AUL_INVITEDATE, AUL_EXPIRE, AUL_AUTHRESULT, AUL_PROCODE)
+  		VALUES(#{sender},#{receiver},default,5,default, #{projectCode})
+	</insert>
+	<update id="updPrm" parameterType="com.han.jun.beans.ProMemB">
+		UPDATE PRM
+        SET PRM_ACCEPT= #{isAccept}
+        WHERE PRM_PMBCODE = #{pmbCode} AND PRM_PROCODE= #{projectCode}
+	</update>
+	<update id="updAul" parameterType="com.han.jun.beans.AulB">
+		UPDATE AUL 
+        SET AUL_AUTHRESULT = #{authResult}
+        WHERE AUL_INVITEDATE = TO_DATE(#{inviteDate}, 'YYYYMMDDHH24MISS') AND AUL_SPMBCODE = #{sender} AND AUL_RPMBCODE = #{receiver}
+	</update>
+	
+<!-- invites -->
+
+	<select id="receivedInvitationInfo" parameterType="com.han.jun.beans.AuthB" resultType="com.han.jun.beans.AulB">
+		<![CDATA[
+		SELECT 	SENDER, SENDERNAME, RECEIVER, TO_CHAR(INVITEDATE,'YYYYMMDDHH24MISS') AS INVITEDATE, 
+				TO_CHAR(EXPIREDATE, 'YYYYMMDDHH24MISS') AS EXPIREDATE, AUTHRESULT
+		FROM RINVITEINFO 
+		WHERE RECEIVER = #{pmbCode} AND INVITEDATE >= (SYSDATE - 1) AND AUTHRESULT = 'NA'
+		]]>
+	</select>
+	<select id="sentInvitationInfo" parameterType="com.han.jun.beans.AuthB" resultType="com.han.jun.beans.AulB">
+	<![CDATA[
+		SELECT 	SENDER, RECEIVER, RECEIVERNAME, TO_CHAR(INVITEDATE,'YYYYMMDDHH24MISS') AS INVITEDATE, 
+				TO_CHAR(EXPIREDATE, 'YYYYMMDDHH24MISS') AS EXPIREDATE, AUTHRESULT, AUTHRESULTNAME
+		FROM SINVITEINFO
+		WHERE SENDER = #{pmbCode} AND INVITEDATE >= (SYSDATE - 2)
+		]]>
+	</select>
+	<select id="isInvited" parameterType="com.han.jun.beans.AuthB" resultType="string">
+		SELECT COUNT(*) FROM RINVITEINFO WHERE RECEIVER = #{pmbCode}
+	</select>
+	<select id="getInviteDate" parameterType="com.han.jun.beans.AulB" resultType="string">
+		SELECT TO_CHAR(MAX(AUL_INVITEDATE), 'YYYYMMDDHH24MISS') FROM AUL 
+		WHERE AUL_SPMBCODE = #{sender} AND AUL_RPMBCODE = #{receiver} AND AUL_AUTHRESULT = 'NA'
+	</select>
+	
+<!--  project -->
+	<select id="getProjectList" parameterType="com.han.jun.beans.AuthB" resultType="com.han.jun.beans.ProListB">
+		SELECT*FROM PROJECTLIST2 WHERE PMBCODE = #{pmbCode} AND ISACCEPT = 'AC' AND POSITION = 'MG'      
+	</select>
+	<select id="getProjectMembers" parameterType="com.han.jun.beans.ProjectB" resultType="string">
+		<![CDATA[
+		SELECT COUNT(*) FROM PRM INNER JOIN PRO ON PRO_CODE = PRM_PROCODE AND PRM_ACCEPT = 'AC' WHERE PRO_CODE = #{projectCode}
+        ]]>
 	</select>
 </mapper>

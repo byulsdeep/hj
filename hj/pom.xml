@@ -14,7 +14,9 @@
 		<org.slf4j-version>1.7.36</org.slf4j-version>
 	</properties>
 	<dependencies>
-		<!-- Spring -->
+	
+<!-- Spring -->
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
@@ -33,14 +35,16 @@
 			<version>${org.springframework-version}</version>
 		</dependency>
 				
-		<!-- AspectJ -->
+<!-- AspectJ -->
+
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
 			<version>${org.aspectj-version}</version>
 		</dependency>	
 		
-		<!-- Logging -->
+<!-- Logging -->
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -55,8 +59,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>${org.slf4j-version}</version>
-			
+			<version>${org.slf4j-version}</version>	
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -83,14 +86,16 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- @Inject -->
+<!-- @Inject -->
+
 		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
 			<version>1</version>
 		</dependency>
 				
-		<!-- Servlet -->
+<!-- Servlet -->
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -107,14 +112,17 @@
 			<version>1.2</version>
 		</dependency>
 	
-		<!-- Test -->
+<!-- Test -->
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
 			<scope>test</scope>
-		</dependency>        
-		<!-- User Added -->
+		</dependency>     
+		   
+<!-- User Added -->
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
@@ -150,7 +158,6 @@
 			<artifactId>log4jdbc-log4j2-jdbc4</artifactId>
 			<version>1.16</version>
 		</dependency>	
-		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -187,7 +194,6 @@
 			<artifactId>javax.mail</artifactId>
 			<version>1.6.2</version>
 		</dependency>
-		
 	</dependencies>
     <build>
         <plugins>

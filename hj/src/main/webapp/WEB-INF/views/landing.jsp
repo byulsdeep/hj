@@ -3,26 +3,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="refresh" content="0;url=http://192.168.0.103/First" />
-<script src="/res/js/common.js">
-</script>
+<meta charset="UTF-8">
+<title>:: PMS :: Project Management System</title>
+<style>
+	@import url("/res/css/common.css");
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+<style>
+	body {
+ background-image: url("res/images/rainbowBlur.jpg");
+}
+</style>
+<script src="/res/js/common.js"></script>
 <script>
-function callServer(a){
-	jsonData = JSON.parse(a);
-	const publicIp = "aslPublicIp=" + jsonData.ip;
+const to = setTimeout(init, 1000);
+
+function init() {
+	getAjaxJson("https://api.ipify.org", "format=json", "callServer");
 	
+}
+function callServer(ajaxData) {
+	jsonData = JSON.parse(ajaxData);
+	const publicIp = "aslPublicIp=" + jsonData.ip;
 	location.href = "http://192.168.0.66/First?" + publicIp;
 }
 </script>
-
-<meta charset="UTF-8">
-<title>::landing::</title>
 </head>
 <body>
-
-<script>
-getAjaxJson("https://api.ipify.org", "format=json", "callServer"); 
-</script>
-	
+	<div class="center">
+		<img src="res/images/handshake.png">
+		<h1>Project Management System</h1>
+	</div>
 </body>
 </html>

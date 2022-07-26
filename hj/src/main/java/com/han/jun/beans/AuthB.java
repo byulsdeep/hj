@@ -15,4 +15,6 @@ public class AuthB {
 	private String pmbEmail;
 	private String aslDate;
 	private int aslAction;
+	private String authCode;
+	private String message;
 }
