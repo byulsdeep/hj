@@ -23,6 +23,12 @@ function init(){
 <br><br><br>
 <section>  
   <article>
+  	<div id="myInfo">
+  		<div>${accessInfo.pmbName}</div>
+  		<div>${accessInfo.pmbLevelName}</div>
+  		<div>${accessInfo.pmbClassName}</div>	
+  		<div>${accessInfo.aslDate}</div>
+  	</div>
   </article>
 </section>
 <footer>
