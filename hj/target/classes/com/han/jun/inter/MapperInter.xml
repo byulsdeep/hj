@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.han.jun.inter.MapperInter">
+	<!-- Query 또는 DML -->
+	<select id="getNewPmbCode" resultType="string">
+		SELECT NVL(TO_CHAR(TO_NUMBER(MAX(PMB_CODE)) +1), TO_CHAR(SYSDATE, 'YYYYMM') || '01') AS PMBCODE 
+		FROM PMB WHERE SUBSTR(PMB_CODE, 1,6) = TO_CHAR(SYSDATE, 'YYYYMM')
+	</select>
+	<insert id="insPmb" parameterType="com.han.jun.beans.AuthB">
+		INSERT INTO PMB(PMB_CODE, PMB_PASSWORD, PMB_NAME, PMB_MLVCODE, PMB_CLACODE, PMB_EMAIL)
+		VALUES (#{pmbCode}, #{pmbPassword}, #{pmbName}, #{pmbLevel}, #{pmbClass}, #{pmbEmail})
+	</insert>
+	<select id="getPassword" parameterType="com.han.jun.beans.AuthB" resultType="string">
+		SELECT PMB_PASSWORD AS PMBPASSWORD FROM PMB WHERE PMB_CODE = #{pmbCode}
+	</select>
+	<select id="isAccess" parameterType="com.han.jun.beans.AuthB" resultType="int">
+		SELECT NVL(SUM(ASL_ACTION), 0) FROM ASL WHERE ASL_PMBCODE = #{pmbCode}
+	</select>
+	<insert id="insAsl" parameterType="com.han.jun.beans.AuthB" >
+		INSERT INTO ASL (ASL_PMBCODE, ASL_DATE, ASL_PUBLICIP, ASL_PRIVATEIP, ASL_ACTION)
+		VALUES (#{pmbCode}, DEFAULT, #{aslPublicIp}, #{aslPrivateIp}, #{aslAction})
+	</insert>
+	<select id="getAccessInfo" parameterType="com.han.jun.beans.AuthB" resultType="com.han.jun.beans.AuthB">
+		SELECT * FROM ACCESSINFO WHERE PMBCODE = #{pmbCode} AND ASLPUBLICIP = #{aslPublicIp} AND ASLPRIVATEIP = #{aslPrivateIp} 
+	</select>
+</mapper>

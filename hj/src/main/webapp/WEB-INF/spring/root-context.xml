@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+		
+		
+		<!-- DBCP : HikariCP : url, username, password -->
+	<bean id="junsDBCP" class="com.zaxxer.hikari.HikariConfig">
+		<property name="driverClassName" value="oracle.jdbc.OracleDriver"></property>
+		<property name="jdbcUrl" value="jdbc:oracle:thin:@192.168.0.137:1521:xe"></property>
+		<property name="username" value="lgj"></property>
+		<property name="password" value="1111"></property>
+	</bean>	
+	
+	<!-- DataSource Configuration -->
+	<bean id="ds" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+		<constructor-arg ref="junsDBCP"></constructor-arg>
+	</bean>
+	
+	<!-- myBatis SqlSessionFactory -->
+	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="ds"></property>
+		<!-- <property name="configLocation" value="classpath:/mappers/mybatis-config.xml"></property> -->
+		<!-- <property name="mapperLocations" value="classpath:/mappers/pmsAuth.xml"></property> -->
+	</bean>
+	
+	<!--  myBatis SqlSessionTemplate : CONNECTION에 대한 자동 종료 -->
+	<bean id="dbcpSession" class="org.mybatis.spring.SqlSessionTemplate" >
+		<constructor-arg name="sqlSessionFactory" ref="sessionFactory"></constructor-arg>
+	</bean>		
+	
+		<!-- Transaction -->
+	<bean id="pmsTran" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="ds"></property>
+	</bean>
+	
+	<!-- Javax.mail -->
+	
+	<bean id="junsMail" class="org.springframework.mail.javamail.JavaMailSenderImpl">  
+		<property name="host" value="smtp.naver.com"></property>
+		<property name="port" value="587"></property>
+		<property name="username" value="we25533"></property>
+		<property name="password" value="kkjjtkarn27$"></property>
+		<property name="defaultEncoding" value="UTF-8"></property>
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.debug">true</prop>
+				<prop key="mail.transport.protocol">smtp</prop>
+				<prop key="mail.smtp.starttls.enable">ture</prop>
+				<prop key="mail.smtp.ssl.checkserveridentity">true</prop> <!-- 서버를 체크해주는 기능 -->
+				<prop key="mail.smtp.ssl.trust">*</prop> <!-- 특정메일만 보낼 수 있게 제한하는기능 -->
+				<prop key="mail.smtp.auth">true</prop> <!-- smtp에 어스방식으로 접근 하겠느냐 -->
+				<prop key="mail.smtp.socketFactory">javax.net.ssl.SSLSocketFactory</prop>
+			
+			</props>
+		</property>
+		
+	</bean>
+	
+	
+	<tx:annotation-driven></tx:annotation-driven>
+	
+	
+	<mybatis-spring:scan base-package="com.han.jun.inter"/>	
+		
+</beans>
